@@ -16,6 +16,6 @@ typedef struct sensor_data_t {
 typedef struct Config_Pin_t{
     uint16_t Pin[4];
     uint8_t Pin_Analog;
-}
+} Config_Pin_t;
 
 #endif

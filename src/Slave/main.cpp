@@ -15,11 +15,7 @@ DHT dht(DHTPIN, DHTTYPE);
 
 // 1. กำหนดโครงสร้างข้อมูล (Data Structure)
 sensor_data_t sensor_data;
-Config_Pin_t Config_pin;
-
-Config_Pin.Pin[4] = {D1,D2,D3,D4};
-Config_pin.Pin_Analog = A0;
-
+Config_Pin_t Config_pin = { {D1, D2, D3, D4}, A0 };;
 
 // state tracking Value
 bool isMessageSent = false;
