@@ -9,7 +9,7 @@
 #define DHTPIN D2
 #define SLEEP_TIME_SEC 10 // 10 วินาที
 
-uint16_t masterMac[] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
+uint16_t masterMac[6] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -27,7 +27,7 @@ void callback(uint8_t *mac_addr, uint8_t *data, uint8_t len){
 } 
 
 void setup() {
-    Serial.begin(112500);
+    Serial.begin(115200);
     Serial.println("\n ---Wake Up---");
 
     dht.begin();
@@ -42,7 +42,7 @@ void setup() {
         sensor_data.temperature = 0.0;
         sensor_data.humidity = 0.0;
     }
-    Serial.printf("Temp: %.2f C, Hum: %.2f %%, Analog: %d\n",senosr_data.temperature, sensor_data.humidity, sensor_data.analog_val);
+    Serial.printf("Temp: %.2f C, Hum: %.2f %%, Analog: %d\n", sensor_data.temperature, sensor_data.humidity, sensor_data.analog_val);
 
     WiFi.mode(WIFI_STA);
     if(esp_now_init() != 0){
@@ -52,10 +52,10 @@ void setup() {
     }
     esp_now_set_self_role(ESP_NOW_ROLE_CONTROLLER);
     esp_now_register_send_cb(callback);
-    esp_now_add_peer(masterMac,ESP_NOW_ROLE_SLAVE, 1, NULL,0);
+    esp_now_add_peer((uint8_t *)masterMac, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
     
     // ส่งข้อมูล
-    esp_now_send(masterMac, (uint8_t *) &sensor_data, sizeof(sensor_data));
+    esp_now_send((uint8_t *)masterMac, (uint8_t *) &sensor_data, sizeof(sensor_data));
 }
 
 void loop() {

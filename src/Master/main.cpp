@@ -8,31 +8,31 @@
 
 class MasterNode {
 private:
-    static MasterNode* instance;
-    sensor_data_t latestData;
-    bool newDataReceived = false;
+    static MasterNode* _instance;
+    sensor_data_t _latestData;
+    bool _newDataReceived = false;
 
     static void onDataRecv(uint8_t *mac, uint8_t *incomingData, uint8_t len) {
-        if (instance != nullptr) {
-            instance->handleReceive(mac, incomingData, len);
+        if (_instance != nullptr) {
+            _instance->handleReceive(mac, incomingData, len);
         }
     }
 
     void handleReceive(uint8_t *mac, uint8_t *incomingData, uint8_t len) {
-        memcpy(&latestData, incomingData, sizeof(latestData));
-        newDataReceived = true; // Set Flag ว่ามีข้อมูลใหม่
+        memcpy(&_latestData, incomingData, sizeof(_latestData));
+        _newDataReceived = true; // Set Flag ว่ามีข้อมูลใหม่
 
         Serial.print("\n[RX] Msg from MAC: ");
         for (int i = 0; i < 6; i++) {
             Serial.printf("%02X", mac[i]);
             if (i < 5) Serial.print(":");
         }
-        Serial.printf(" | Node ID: %d\n", latestData.node_id);
+        Serial.printf(" | Node ID: %d\n", _latestData.node_id);
     }
 
 public:
     MasterNode() {
-        instance = this;
+        _instance = this;
     }
 
     void begin() {
@@ -50,16 +50,16 @@ public:
 
     // ฟังก์ชันสำหรับดึงข้อมูล (Non-blocking check)
     bool getNewData(sensor_data_t &dataOut) {
-        if (newDataReceived) {
-            dataOut = latestData;
-            newDataReceived = false; // Reset flag
+        if (_newDataReceived) {
+            dataOut = _latestData;
+            _newDataReceived = false; // Reset flag
             return true;
         }
         return false;
     }
 };
 
-MasterNode* MasterNode::instance = nullptr;
+MasterNode* MasterNode::_instance = nullptr;
 
 MasterNode myMaster;
 
