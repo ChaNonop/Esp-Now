@@ -20,11 +20,11 @@ Config_Pin_t Config_pin = { {D1, D2, D3, D4}, A0 };;
 // state tracking Value
 bool isMessageSent = false;
 
-void callback(uint8_t *mac_addr, uint8_t *data, uint8_t len){
+void callback(uint8_t *mac_addr, uint8_t status){
     Serial.print("[Slave] Sens status : ");
-    Serial.println(data == 0 ? "Success" : "fail");
+    Serial.println(status == 0 ? "Success" : "fail");
     isMessageSent = true;  // อัปเดต Flag เพื่อให้รู้ว่าส่งจบแล้ว 
-} 
+}
 
 void setup() {
     Serial.begin(115200);
